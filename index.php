@@ -38,12 +38,12 @@
       $dirArr = array_values($dirArr);
 
       foreach ($dirArr as $dirValue) {
-         if (is_dir($dirValue)) {
+         if (is_dir($dirPath.$dirValue)) {
             $newPath =  $_SERVER['REQUEST_URI'] . '?path=' . $dirValue . "/";
             print("<tr><td>Folder</td>");
             print("<td><a href=" . $newPath . ">$dirValue</a></td></tr>");
             // print("</tr>");
-         } else if (is_file($dirValue)) {
+         } else if (is_file($dirPath.$dirValue)) {
             print("<tr><td>File</td><td>$dirValue</td></tr>");
          }
       }

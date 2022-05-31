@@ -49,13 +49,15 @@
          print("<h1> Current directory:" . str_replace("?path=./", "", $_SERVER['REQUEST_URI']) . "</h1>");
 
          if (isset($_POST['download'])) {
-            $file = './' . $_POST['download'];
+            $strExplode = explode(" ",$_POST['download']);
+            array_splice($strExplode,0,1);
+            $pathEnd = implode(" ",$strExplode);
+            $file = './' .$_GET["path"]." ".$pathEnd;
             $fileToDownloadEscaped = str_replace("&nbsp;", " ", htmlentities($file, 0, 'utf-8'));
-            print($fileToDownloadEscaped);
             ob_clean();
             ob_start();
             header('Content-Disposition: attachment; filename=' . basename($fileToDownloadEscaped));
-            header('Content-Length: ' . filesize($fileToDownloadEscaped)); // kiek baitų browseriui laukti, jei 0 - failas neveiks nors bus sukurtas
+            header('Content-Length: ' . filesize($fileToDownloadEscaped));
             ob_end_flush();
             readfile($fileToDownloadEscaped);
             exit;
@@ -110,12 +112,14 @@
             if (is_dir($dirPath . $dirValue)) {
                print("<tr><td>Folder</td><td><a href=" . $path . $dirValue . "/" . ">" . $dirValue . "</a></td><td></td></tr>");
             } else if (is_file($dirPath . $dirValue)) {
-               $_POST["download"] = $dirValue;
+               // $_POST["download"] = $dirValue;
                print("<tr><td>File</td><td>$dirValue</td>
                   <td><form action=" . $path . $dirValue . " method='POST'>
                   <button id='download' name='download' value='$dirValue'>Download</button>
                   </form>
                   </td></tr>");
+                  // print("<pre>");
+                  // print($path.$dirValue);
             }
          }
 

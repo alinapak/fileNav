@@ -28,11 +28,11 @@
       }
    }
    ?>
-   <h1 id="logrequire" <?php isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true
+   <h1 class="header" <?php isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true
                            ? print("style = 'display: none'")
                            : print("style = 'display: block'") ?>>
       Please log in to look at PHP file browser </h1>
-   <form action="" method="post" <?php isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true
+   <form action="" method="POST" <?php isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true
                                     ? print("style = 'display: none'")
                                     : print("style = 'display: block'") ?>>
       <input type="text" name="username" placeholder="Username" required></br>
@@ -45,14 +45,13 @@
       if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
          $logOut = './?action=logout';
          print("<h3 id='log-out'><a href=" . $logOut . "> <i class='fa-solid fa-arrow-right-from-bracket'></i> Quit</a></h3>");
-         print("<h1>Current Directory: " . $_SERVER['REQUEST_URI'] . "</h1>");
-         print("<h1> Current directory:" . str_replace("?path=./", "", $_SERVER['REQUEST_URI']) . "</h1>");
-
+         print("<h1 class='header'>Welcome to file browser!</h1>");
+         print("<h2 class='header'> Current directory:" . str_replace("?path=./", "", $_SERVER['REQUEST_URI']) . "</h2>");
          if (isset($_POST['download'])) {
-            $strExplode = explode(" ",$_POST['download']);
-            array_splice($strExplode,0,1);
-            $pathEnd = implode(" ",$strExplode);
-            $file = './' .$_GET["path"]." ".$pathEnd;
+            $strExplode = explode(" ", $_POST['download']);
+            array_splice($strExplode, 0, 1);
+            $pathEnd = implode(" ", $strExplode);
+            $file = './' . $_GET["path"] . " " . $pathEnd;
             $fileToDownloadEscaped = str_replace("&nbsp;", " ", htmlentities($file, 0, 'utf-8'));
             ob_clean();
             ob_start();
@@ -84,14 +83,13 @@
                $error;
             }
          }
-         print("
-            <form id='upload' action ='' method ='post' enctype = 'multipart/form-data'>
-               <input type ='file' name ='file' />
-               <input type ='submit' value= 'Upload'/>
-            </form>
-            <h2 class='message'>$error</h2>
-            <h2 class='message'>$success</h2>
-         ");
+         $deleteMsg = '';
+         if (isset($_POST['delete']) && $_POST['delete'] !== 'index.php' && $_POST['delete'] !== 'style.css') {
+            $file = './' . $_GET['path'] . $_POST['delete'];
+            unlink($file);
+         } else if (isset($_POST['delete']) && ($_POST['delete'] === 'index.php' || $_POST['delete'] === 'style.css')) {
+            $deleteMsg = 'This file can not be deleted!';
+         }
          print("<table id='table'><tr><th>Type</th><th>Name</th><th>Action</th></tr>");
          if (isset($_GET["path"])) {
             $path = $_SERVER['REQUEST_URI'];
@@ -112,21 +110,32 @@
             if (is_dir($dirPath . $dirValue)) {
                print("<tr><td>Folder</td><td><a href=" . $path . $dirValue . "/" . ">" . $dirValue . "</a></td><td></td></tr>");
             } else if (is_file($dirPath . $dirValue)) {
-               // $_POST["download"] = $dirValue;
+               // && $dirValue!=='index.php' && $dirValue!=='style.css'
                print("<tr><td>File</td><td>$dirValue</td>
-                  <td><form action=" . $path . $dirValue . " method='POST'>
-                  <button id='download' name='download' value='$dirValue'>Download</button>
-                  </form>
-                  </td></tr>");
-                  // print("<pre>");
-                  // print($path.$dirValue);
+                           <td><form class='form' action=" . $path . $dirValue . " method='POST'>
+                           <button id='download' name='download' value='$dirValue'>Download</button>
+                           </form>
+                           <form class='form' method='POST' action=''>
+                           <button id='delete' name='delete' value='$dirValue'>Delete</button>
+                           </form>
+                           </td></tr>");
             }
          }
-
          print("</table>");
+         print("<p class='message'> $deleteMsg</p>");
          $backPath = "?path=" . dirname($_GET["path"]) . "/";
-         print("<button id='button'><a href=" . $backPath . ">Back</a></button>");
-         print("<form id='form' method='post' action=''><input type='text' name='createDir'placeholder='Type new directory name here' ><input type='submit' value='Create'></form>");
+         print("<footer>");
+         print("<a href=" . $backPath . ">Back</a>");
+         print("
+            <form id='upload' action ='' method ='post' enctype = 'multipart/form-data'>
+               <input type ='file' name ='file' />
+               <input type ='submit' value= 'Upload'/>
+               <p class='message'>$error</p>
+         <p class='message'>$success</p>
+            </form>
+         ");
+         print("<form id='form' method='POST' action=''><input type='text' name='createDir'placeholder='Type new directory name here' ><input type='submit' value='Create'></form>");
+         print("</footer>");
       }
    ?>
    <script src="https://kit.fontawesome.com/255176e611.js" crossorigin="anonymous"></script>

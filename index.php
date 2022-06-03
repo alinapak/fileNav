@@ -11,22 +11,22 @@
 
 <body>
    <?php
-   session_start();
-
-   if (isset($_GET['action']) and $_GET['action'] == 'logout') {
-      session_destroy();
       session_start();
-   }
 
-   $message = '';
-   if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['password'])) {
-      if ($_POST['username'] == 'Username' && $_POST['password'] == '12345') {
-         $_SESSION['logged_in'] = true;
-         $_SESSION['username'] = $_POST['username'];
-      } else {
-         $message = 'Wrong username or password';
+      if (isset($_GET['action']) and $_GET['action'] == 'logout') {
+         session_destroy();
+         session_start();
       }
-   }
+
+      $message = '';
+      if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['password'])) {
+         if ($_POST['username'] == 'Username' && $_POST['password'] == '12345') {
+            $_SESSION['logged_in'] = true;
+            $_SESSION['username'] = $_POST['username'];
+         } else {
+            $message = 'Wrong username or password';
+         }
+      }
    ?>
    <h1 class="header" <?php isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true
                            ? print("style = 'display: none'")
@@ -38,7 +38,7 @@
       <input type="text" name="username" placeholder="Username" required></br>
       <input type="password" name="password" placeholder="12345" required>
       <h4 class='message'><?php echo $message; ?></h4>
-      <input type="submit" name="login" value="Login" formaction="./index.php">
+      <input type="submit" name="login" value="Login" formaction="./">
    </form>
 
    <?php
@@ -84,9 +84,12 @@
             }
          }
          $deleteMsg = '';
+         $warning = '';
          if (isset($_POST['delete']) && $_POST['delete'] !== 'index.php' && $_POST['delete'] !== 'style.css') {
             $file = './' . $_GET['path'] . $_POST['delete'];
-            unlink($file);
+            if (file_exists($file)) {
+               unlink($file);
+            }
          } else if (isset($_POST['delete']) && ($_POST['delete'] === 'index.php' || $_POST['delete'] === 'style.css')) {
             $deleteMsg = 'This file can not be deleted!';
          }
@@ -96,46 +99,85 @@
          } else {
             $path =  $_SERVER['REQUEST_URI'] . '?path=';
          }
-         if (isset($_POST['createDir']) && (!file_exists($_POST['createDir']))) {
-            mkdir("./" . $_GET["path"] . "/" . $_POST['createDir']);
+         if (isset($_POST['createDir']) && !file_exists("./" . $_GET["path"] . "/" . $_POST['createDir'])) {
+            @mkdir("./" . $_GET["path"] . "/" . $_POST['createDir']);
+         } else if (isset($_POST['createDir']) && file_exists("./" . $_GET["path"] . "/" . $_POST['createDir'])) {
+            print($_GET["path"] . "/" . $_POST['createDir']);
+            $warning = 'Directory named "' . $_POST['createDir'] . '" already exists';
          }
-
          $dir = "./";
-         $dirPath = $dir . $_GET["path"];
-         $dirArr = scandir($dirPath);
-         $dirArr = array_diff($dirArr, array(".", ".."));
-         $dirArr = array_values($dirArr);
+         if (isset($_GET["path"])) {
+            $dirPath = $dir . $_GET["path"];
+            $dirArr = scandir($dirPath);
+            $dirArr = array_diff($dirArr, array(".", ".."));
+            $dirArr = array_values($dirArr);
 
-         foreach ($dirArr as $dirValue) {
-            if (is_dir($dirPath . $dirValue)) {
-               print("<tr><td>Folder</td><td><a href=" . $path . $dirValue . "/" . ">" . $dirValue . "</a></td><td></td></tr>");
-            } else if (is_file($dirPath . $dirValue)) {
-               // && $dirValue!=='index.php' && $dirValue!=='style.css'
-               print("<tr><td>File</td><td>$dirValue</td>
-                           <td><form class='form' action=" . $path . $dirValue . " method='POST'>
-                           <button id='download' name='download' value='$dirValue'>Download</button>
-                           </form>
-                           <form class='form' method='POST' action=''>
-                           <button id='delete' name='delete' value='$dirValue'>Delete</button>
-                           </form>
-                           </td></tr>");
+            foreach ($dirArr as $dirValue) {
+               if (is_dir($dirPath . $dirValue)) {
+                  print("<tr><td>Folder</td><td><a href=" . $path . $dirValue . "/" . ">" . $dirValue . "</a></td><td></td></tr>");
+               } else if (is_file($dirPath . $dirValue)) {
+                  print("<tr><td>File</td><td>$dirValue</td>
+                                 <td><form class='form' action=" . $path . $dirValue . " method='POST'>
+                                 <button id='download' name='download' value='$dirValue'>Download</button>
+                                 </form>
+                                 <form class='form' method='POST' action=''>
+                                 <button id='delete' name='delete' value='$dirValue'>Delete</button>
+                                 </form>
+                                 </td></tr>");
+               }
             }
+            print("</table>");
+            print("<p class='message'> $deleteMsg</p>");
+            print("<p class='message'> $warning</p>");
+            $backPath = "?path=" . dirname($_GET["path"]) . "/";
+            print("<footer>");
+            print("<a href=" . $backPath . ">Back</a>");
+            print("
+                  <form id='upload' action ='' method ='post' enctype = 'multipart/form-data'>
+                     <input type ='file' name ='file' />
+                     <input type ='submit' value= 'Upload'/>
+                     <p class='message'>$error</p>
+               <p class='message'>$success</p>
+                  </form>
+               ");
+            print("<form id='form' method='POST' action=''><input type='text' name='createDir'placeholder='Type new directory name here' required><input type='submit' value='Create'></form>");
+            print("</footer>");
+         } else {
+            $dirPath = $dir;
+            $dirArr = scandir($dirPath);
+            $dirArr = array_diff($dirArr, array(".", ".."));
+            $dirArr = array_values($dirArr);
+
+            foreach ($dirArr as $dirValue) {
+               if (is_dir($dirPath . $dirValue)) {
+                  print("<tr><td>Folder</td><td><a href=" . $path . $dirValue . "/" . ">" . $dirValue . "</a></td><td></td></tr>");
+               } else if (is_file($dirPath . $dirValue)) {
+                  print("<tr><td>File</td><td>$dirValue</td>
+                                 <td><form class='form' action=" . $path . $dirValue . " method='POST'>
+                                 <button id='download' name='download' value='$dirValue'>Download</button>
+                                 </form>
+                                 <form class='form' method='POST' action=''>
+                                 <button id='delete' name='delete' value='$dirValue'>Delete</button>
+                                 </form>
+                                 </td></tr>");
+               }
+            }
+            print("</table>");
+            print("<p class='message'> $deleteMsg</p>");
+            print("<p class='message'> $warning</p>");
+            print("<footer>");
+            print("<a href=''>Back</a>");
+            print("
+                  <form id='upload' action ='' method ='post' enctype = 'multipart/form-data'>
+                     <input type ='file' name ='file' />
+                     <input type ='submit' value= 'Upload'/>
+                     <p class='message'>$error</p>
+               <p class='message'>$success</p>
+                  </form>
+               ");
+            print("<form id='form' method='POST' action=''><input type='text' name='createDir'placeholder='Type new directory name here' required><input type='submit' value='Create'></form>");
+            print("</footer>");
          }
-         print("</table>");
-         print("<p class='message'> $deleteMsg</p>");
-         $backPath = "?path=" . dirname($_GET["path"]) . "/";
-         print("<footer>");
-         print("<a href=" . $backPath . ">Back</a>");
-         print("
-            <form id='upload' action ='' method ='post' enctype = 'multipart/form-data'>
-               <input type ='file' name ='file' />
-               <input type ='submit' value= 'Upload'/>
-               <p class='message'>$error</p>
-         <p class='message'>$success</p>
-            </form>
-         ");
-         print("<form id='form' method='POST' action=''><input type='text' name='createDir'placeholder='Type new directory name here' ><input type='submit' value='Create'></form>");
-         print("</footer>");
       }
    ?>
    <script src="https://kit.fontawesome.com/255176e611.js" crossorigin="anonymous"></script>

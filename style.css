@@ -144,7 +144,7 @@ td #delete {
    padding: 5px 15px 5px 15px;
 }
 
-footer {
+#bar {
    padding: 1rem;
    position: sticky;
    top: 100vh;
@@ -155,7 +155,7 @@ footer {
    gap: 1rem;
 }
 
-footer a {
+#bar a {
    font-size: 13px;
    font-family: Tahoma;
    /*default button or input font*/

@@ -108,7 +108,6 @@
          if (isset($_POST['createDir']) && !file_exists("./" . $_GET["path"] . "/" . $_POST['createDir'])) {
             @mkdir("./" . $_GET["path"] . "/" . $_POST['createDir']);
          } else if (isset($_POST['createDir']) && file_exists("./" . $_GET["path"] . "/" . $_POST['createDir'])) {
-            print($_GET["path"] . "/" . $_POST['createDir']);
             $warning = 'Directory named "' . $_POST['createDir'] . '" already exists';
          }
          $dir = "./";

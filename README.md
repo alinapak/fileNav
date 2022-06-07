@@ -19,7 +19,7 @@ To launch this project you will need `Git Bash` or `Visual Studio Code` and `XAM
    * Open your browser and in search bar type `localhost/fileNav`.
 
 ## Usage
-After typing in your browser search bar `localhost/fileNav`, you will be greeted with authentification. To log in into PHP File Browser you need to type in `Username` in first field and `12345` in second password field. After that you ar logged in and now you can test PHP File Browser:
+After typing in your browser search bar `localhost/fileNav`, you will be greeted with authentification. To log in into PHP File Browser you need to type in `Username` in first field and `12345` in second password field. After that you are logged in and now you can test PHP File Browser:
    * Try to create new directories and other directories in these directories;
    * For going back try `Back` button (same as browser back, but more convenient);
    * Try to upload your own files in your current directory (**NOTE**: it can only be uploaded JPEG,PNG or TXT files);

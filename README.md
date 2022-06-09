@@ -12,10 +12,9 @@ This project was created for study reason. Assigned and completed tasks were the
 It was used raw CSS and PHP in this project.
 ##  Installation
 To launch this project you will need `Git Bash` or `Visual Studio Code` and `XAMPP` or other web server package. If you already have these apps, follow these steps to launch PHP File Browser:
-   * Open Folder where you want to clone this project with `Git Bash` or `Visual Studio Code`;
-   * In `Git Bash` or `Visual Studio Code` terminal type `git clone https://github.com/alinapak/fileNav.git`;
+   * If you have `XAMPP` open **htdocs** folder and clone this project with `Git Bash` or `Visual Studio Code` in **htdocs** folder by typing in terminal `git clone https://github.com/alinapak/fileNav.git`;
    * Open cloned project with `Visual Studio Code`;
-   * Open `XAMPP` or other web server package and start server (I was using `Apache` server);
+   * Open `XAMPP` start server (I was using `Apache` server);
    * Open your browser and in search bar type `localhost/fileNav`.
 
 ## Usage

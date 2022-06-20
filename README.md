@@ -13,9 +13,8 @@ It was used raw CSS and PHP in this project.
 ##  Installation
 To launch this project you will need `Git Bash` or `Visual Studio Code` and `XAMPP` or other web server package. If you already have these apps, follow these steps to launch PHP File Browser:
    * If you have `XAMPP` open **htdocs** folder and clone this project with `Git Bash` or `Visual Studio Code` in **htdocs** folder by typing in terminal `git clone https://github.com/alinapak/fileNav.git`;
-   * Open cloned project with `Visual Studio Code`;
-   * Open `XAMPP` start server (I was using `Apache` server);
-   * Open your browser and in search bar type `localhost/fileNav`.
+   * Open `XAMPP` and start server (I was using `Apache` server);
+   * Open your browser and in search bar type `localhost/fileNav`.`
 
 ## Usage
 After typing in your browser search bar `localhost/fileNav`, you will be greeted with authentification. To log in into PHP File Browser you need to type in `Username` in first field and `12345` in second password field. After that you are logged in and now you can test PHP File Browser:

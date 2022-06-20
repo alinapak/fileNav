@@ -46,7 +46,8 @@
          $logOut = './?action=logout';
          print("<h3 id='log-out'><a href=" . $logOut . "> <i class='fa-solid fa-arrow-right-from-bracket'></i> Quit</a></h3>");
          print("<h1 class='header'>Welcome to file browser!</h1>");
-         print("<h2 class='header'> Current directory:" . str_replace("?path=./", "", $_SERVER['REQUEST_URI']) . "</h2>");
+         // rawurlencode() function returns a string in which all non-alphanumeric characters except -_.~ have been replaced with a percent (%) sign followed by two hex digits.
+         print("<h2 class='header'> Current directory:" . rawurldecode(str_replace("?path=./", "", $_SERVER['REQUEST_URI'])) . "</h2>");
          if (isset($_POST['download'])) {
             $strExplode = explode(" ", $_POST['download']);
             array_splice($strExplode, 0, 1);
